@@ -65,7 +65,7 @@ public class UpdateActivity extends Activity {
                 return;
             }
             runOnUiThread(() -> progress.setMessage("Baixando versão " + remote + "…"));
-            install(BASE + "Timer25.apk");
+            install(BASE + "TimerZap.apk");
         } catch (Exception e) {
             done("Falha ao atualizar: " + e.getMessage());
         }

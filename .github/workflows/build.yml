@@ -37,13 +37,13 @@ jobs:
         run: gradle :app:assembleRelease --no-daemon
 
       - run: |
-          cp app/build/outputs/apk/release/app-release.apk Timer25.apk
+          cp app/build/outputs/apk/release/app-release.apk TimerZap.apk
           echo $((GITHUB_RUN_NUMBER + 100)) > version.txt
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Timer25
-          path: Timer25.apk
+          name: TimerZap
+          path: TimerZap.apk
 
       # Publica em Releases: link fixo para baixar no celular + version.txt para o "Atualizar"
       - name: Release
@@ -51,4 +51,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete latest -y --cleanup-tag || true
-          gh release create latest Timer25.apk version.txt --title "Timer Zap v1.$(cat version.txt)" --notes "Build automático"
+          gh release create latest TimerZap.apk version.txt --title "Timer Zap v1.$(cat version.txt)" --notes "Build automático"
