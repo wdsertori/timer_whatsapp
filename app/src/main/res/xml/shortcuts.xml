@@ -11,4 +11,15 @@
             android:targetPackage="com.wall.timer25"
             android:targetClass="com.wall.timer25.SettingsActivity" />
     </shortcut>
+    <shortcut
+        android:shortcutId="update"
+        android:enabled="true"
+        android:icon="@android:drawable/stat_sys_download"
+        android:shortcutShortLabel="@string/update"
+        android:shortcutLongLabel="@string/update">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.wall.timer25"
+            android:targetClass="com.wall.timer25.UpdateActivity" />
+    </shortcut>
 </shortcuts>

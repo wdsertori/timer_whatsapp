@@ -22,19 +22,33 @@ jobs:
         with:
           gradle-version: "8.11.1"
 
-      - run: gradle :app:assembleDebug --no-daemon
+      - name: Exige a senha da chave
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_PASSWORD" ]; then
+            echo "::error::Crie o Secret KEYSTORE_PASSWORD (Settings > Secrets and variables > Actions)"
+            exit 1
+          fi
 
-      - run: cp app/build/outputs/apk/debug/app-debug.apk Timer25.apk
+      - name: Build
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: gradle :app:assembleRelease --no-daemon
+
+      - run: |
+          cp app/build/outputs/apk/release/app-release.apk Timer25.apk
+          echo $((GITHUB_RUN_NUMBER + 100)) > version.txt
 
       - uses: actions/upload-artifact@v4
         with:
           name: Timer25
           path: Timer25.apk
 
-      # Publica em Releases para baixar direto no celular
+      # Publica em Releases: link fixo para baixar no celular + version.txt para o "Atualizar"
       - name: Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete latest -y --cleanup-tag || true
-          gh release create latest Timer25.apk --title "Timer 25" --notes "Build automático"
+          gh release create latest Timer25.apk version.txt --title "Timer Zap v1.$(cat version.txt)" --notes "Build automático"

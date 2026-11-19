@@ -2,6 +2,11 @@ plugins {
     id "com.android.application"
 }
 
+// Senha da chave vem do Secret KEYSTORE_PASSWORD do GitHub (nunca fica no código)
+def ksPass = System.getenv("KEYSTORE_PASSWORD")
+// Versão sobe sozinha a cada build do GitHub Actions
+def buildNum = (System.getenv("GITHUB_RUN_NUMBER") ?: "0").toInteger() + 100
+
 android {
     namespace "com.wall.timer25"
     compileSdk 35
@@ -10,8 +15,32 @@ android {
         applicationId "com.wall.timer25"
         minSdk 26
         targetSdk 35
-        versionCode 3
-        versionName "1.2"
+        versionCode buildNum
+        versionName "1.${buildNum}"
+    }
+
+    signingConfigs {
+        release {
+            if (ksPass) {
+                storeFile rootProject.file("release.p12")
+                storeType "pkcs12"
+                storePassword ksPass
+                keyAlias "timer"
+                keyPassword ksPass
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig ksPass ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
     }
 
     compileOptions {

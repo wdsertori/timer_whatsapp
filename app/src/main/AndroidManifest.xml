@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- Android 11+: permite listar/abrir os apps instalados (para escolher na configuração) -->
     <queries>
@@ -44,6 +46,15 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:excludeFromRecents="true"
             android:taskAffinity="com.wall.timer25.settings" />
+
+        <!-- Atualização pelo GitHub -->
+        <activity
+            android:name=".UpdateActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.wall.timer25.update" />
 
         <!-- Tela que aparece quando o alarme toca (inclusive com tela bloqueada) -->
         <activity
