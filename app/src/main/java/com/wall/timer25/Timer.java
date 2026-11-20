@@ -20,6 +20,7 @@ final class Timer {
 
     static final String ACTION_FIRE = "com.wall.timer25.FIRE";
     static final String ACTION_STOP = "com.wall.timer25.STOP";
+    static final String ACTION_TAP = "com.wall.timer25.TAP";
 
     private static final String CHANNEL = "alarm_v1";
     private static final int NOTIF_ID = 25;
@@ -27,14 +28,18 @@ final class Timer {
     private static final String KEY_END = "end";
     private static final String KEY_MIN = "minutes";
     private static final String KEY_APP = "app";
+    private static final String KEY_RINGING = "ringing";
 
     // ---------- Configurações ----------
     static SharedPreferences prefs(Context c) { return c.getSharedPreferences(PREFS, 0); }
     static int minutes(Context c) { return prefs(c).getInt(KEY_MIN, DEFAULT_MINUTES); }
+    static long endTime(Context c) { return prefs(c).getLong(KEY_END, 0); }
+    static boolean isRinging(Context c) { return prefs(c).getBoolean(KEY_RINGING, false); }
     static String appPackage(Context c) { return prefs(c).getString(KEY_APP, DEFAULT_APP); }
 
     static void saveSettings(Context c, int minutes, String pkg) {
-        prefs(c).edit().putInt(KEY_MIN, minutes).putString(KEY_APP, pkg).apply();
+        prefs(c).edit().putInt(KEY_MIN, minutes).putString(KEY_APP, pkg).commit();
+        TimerWidget.refresh(c);
     }
 
     static String appLabel(Context c) {
@@ -52,13 +57,15 @@ final class Timer {
         stopRinging(ctx);
         long end = System.currentTimeMillis() + minutes(ctx) * 60_000L;
         schedule(ctx, end);
-        prefs(ctx).edit().putLong(KEY_END, end).apply();
+        prefs(ctx).edit().putLong(KEY_END, end).commit();
+        TimerWidget.refresh(ctx);
     }
 
     /** Reagenda após reboot, se o timer ainda não tinha terminado. */
     static void restoreAfterBoot(Context ctx) {
         long end = prefs(ctx).getLong(KEY_END, 0);
         if (end > System.currentTimeMillis()) schedule(ctx, end);
+        TimerWidget.refresh(ctx);
     }
 
     private static void schedule(Context ctx, long end) {
@@ -69,13 +76,14 @@ final class Timer {
     }
 
     static void ring(Context ctx) {
-        prefs(ctx).edit().remove(KEY_END).apply();
+        prefs(ctx).edit().remove(KEY_END).putBoolean(KEY_RINGING, true).commit();
+        TimerWidget.refresh(ctx);
         NotificationManager nm = ctx.getSystemService(NotificationManager.class);
         ensureChannel(nm);
         String app = appLabel(ctx);
 
         Notification n = new Notification.Builder(ctx, CHANNEL)
-                .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+                .setSmallIcon(R.drawable.ic_bubble_clock)
                 .setContentTitle(minutes(ctx) + " minutos! Responda os clientes")
                 .setContentText("Toque para parar e abrir o " + app)
                 .setCategory(Notification.CATEGORY_ALARM)
@@ -94,6 +102,8 @@ final class Timer {
 
     static void stopRinging(Context ctx) {
         ctx.getSystemService(NotificationManager.class).cancel(NOTIF_ID);
+        prefs(ctx).edit().putBoolean(KEY_RINGING, false).commit();
+        TimerWidget.refresh(ctx);
     }
 
     private static void ensureChannel(NotificationManager nm) {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Balão de fala com relógio (ponteiros vazados: a cor do fundo aparece por dentro) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <group android:scaleX="1.2" android:scaleY="1.2" android:pivotX="54" android:pivotY="54">
+        <path android:fillColor="#FFFFFF" android:fillType="evenOdd"
+            android:pathData="M43,71.05 A22,22 0 1,0 34.06,61.3 L32.5,73.5 Z M38,52 A16,16 0 1,0 70,52 A16,16 0 1,0 38,52 Z M41,52 A13,13 0 1,0 67,52 A13,13 0 1,0 41,52 Z M52.4,42 L55.6,42 L55.6,53.6 L52.4,53.6 Z M55.6,50.4 L62,50.4 L62,53.6 L55.6,53.6 Z" />
+    </group>
+</vector>

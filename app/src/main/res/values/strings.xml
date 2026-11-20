@@ -3,4 +3,5 @@
     <string name="app_name">Timer Zap</string>
     <string name="settings">Configurar</string>
     <string name="update">Atualizar</string>
+    <string name="widget_desc">Toque para iniciar/zerar. Cinza parado, verde contando, vermelho tocando.</string>
 </resources>
